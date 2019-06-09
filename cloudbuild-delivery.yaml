@@ -56,6 +56,8 @@ steps:
   - '-c'
   - |
     git config --global user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)') && \
+    # remove https origin and add ssh origin
+    git remote remove origin && git remote add origin git@github.com:dillydev/pinger-k8s.git && \
     # Switch to the dev branch and copy the manifests from the candidate branch
     git fetch origin dev && git checkout dev && \
     git checkout $COMMIT_SHA manifests && \
