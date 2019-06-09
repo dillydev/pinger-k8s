@@ -2,7 +2,7 @@ steps:
 
 - name: 'gcr.io/$PROJECT_ID/helm'
   id: generate manifest
-  entrypoint: bin/sh
+  entrypoint: bash
   args:
   - '-c'
   - |
