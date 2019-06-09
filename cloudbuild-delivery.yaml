@@ -1,5 +1,9 @@
-steps:
+substitutions:
+  _EXEC_NAME: 'pinger'
+  _GITHUB_ORG: 'dillydev'
+  _GITHUB_REPO: 'pinger-k8s'
 
+steps:
 # This step deploys the new version of our container image
 # in the hello-cloudbuild Kubernetes Engine cluster.
 - name: 'gcr.io/cloud-builders/kubectl'
@@ -7,7 +11,7 @@ steps:
   args:
   - 'apply'
   - '-f'
-  - 'manifests/pinger/templates/deployment.yaml'
+  - 'manifests/$_EXEC_NAME/templates/deployment.yaml'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-b'
   - 'CLOUDSDK_CONTAINER_CLUSTER=hello-cloudbuild'
@@ -57,7 +61,7 @@ steps:
   - |
     git config --global user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)') && \
     # remove https origin and add ssh origin
-    git remote remove origin && git remote add origin git@github.com:dillydev/pinger-k8s.git && \
+    git remote remove origin && git remote add origin git@github.com:$_GITHUB_ORG/$_GITHUB_REPO.git && \
     # Switch to the dev branch and copy the manifests from the candidate branch
     git fetch origin dev && git checkout dev && \
     git checkout $COMMIT_SHA manifests && \
