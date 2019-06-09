@@ -5,11 +5,14 @@ steps:
   args:
   - 'template'
   - '--output-dir'
-  - './manifests'
+  - '/artifacts'
   - './pinger'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-b'
   - 'CLOUDSDK_CONTAINER_CLUSTER=hello-cloudbuild'
+  volumes:
+  - name: 'artifacts'
+    path: '/artifacts'
 
 # This step deploys the new version of our container image
 # in the hello-cloudbuild Kubernetes Engine cluster.
@@ -18,10 +21,13 @@ steps:
   args:
   - 'apply'
   - '-f'
-  - 'manifests/pinger/templates/deployment.yaml'
+  - '/artifacts/pinger/templates/deployment.yaml'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-b'
   - 'CLOUDSDK_CONTAINER_CLUSTER=hello-cloudbuild'
+  volumes:
+  - name: 'artifacts'
+    path: '/artifcats'
 
 # Copy the files from storage needed to connect to git.
 - name: 'gcr.io/cloud-builders/gsutil'
@@ -68,6 +74,7 @@ steps:
   args:
   - '-c'
   - |
+    mv /artifacts/pinger manifests/pinger
     set -x && \
     # Configure Git to create commits with Cloud Build's service account
     git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)') && \
@@ -89,3 +96,5 @@ steps:
   volumes:
   - name: 'ssh'
     path: /root/.ssh
+  - name: 'artifacts'
+    path: '/artifacts'
