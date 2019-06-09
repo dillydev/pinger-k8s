@@ -1,37 +1,17 @@
 steps:
 
-- name: 'gcr.io/$PROJECT_ID/helm'
-  id: generate manifest
-  entrypoint: bash
+# This step deploys the new version of our container image
+# in the hello-cloudbuild Kubernetes Engine cluster.
+- name: 'gcr.io/cloud-builders/kubectl'
+  id: Deploy
   args:
-  - '-c'
-  - |
-    ls
-  # - 'template'
-  # - '--output-dir'
-  # - '/artifacts'
-  # - './pinger'
+  - 'apply'
+  - '-f'
+  - 'manifests/pinger/templates/deployment.yaml'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-b'
   - 'CLOUDSDK_CONTAINER_CLUSTER=hello-cloudbuild'
-  # volumes:
-  # - name: 'artifacts'
-  #   path: '/artifacts'
 
-# This step deploys the new version of our container image
-# in the hello-cloudbuild Kubernetes Engine cluster.
-# - name: 'gcr.io/cloud-builders/kubectl'
-#   id: Deploy
-#   args:
-#   - 'apply'
-#   - '-f'
-#   - '/artifacts/pinger/templates/deployment.yaml'
-#   env:
-#   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-b'
-#   - 'CLOUDSDK_CONTAINER_CLUSTER=hello-cloudbuild'
-#   volumes:
-#   - name: 'artifacts'
-#     path: '/artifacts'
 
 # Copy the files from storage needed to connect to git.
 - name: 'gcr.io/cloud-builders/gsutil'
@@ -75,7 +55,15 @@ steps:
   args:
   - '-c'
   - |
-    ls
+    git config --global user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)') && \
+    # Switch to the dev branch and copy the manifests from the candidate branch
+    git fetch origin dev && git checkout dev && \
+    git checkout $COMMIT_SHA manifests && \
+    # Commit the manifests with a descriptive commit message
+    git commit -m "Manifest from commit $COMMIT_SHA
+    $(git log --format=%B -n 1 $COMMIT_SHA)" && \
+    # Push the changes back to Cloud Source Repository
+    git push origin dev
   volumes:
   - name: 'ssh'
     path: /root/.ssh
