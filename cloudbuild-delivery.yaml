@@ -27,7 +27,7 @@ steps:
   - 'CLOUDSDK_CONTAINER_CLUSTER=hello-cloudbuild'
   volumes:
   - name: 'artifacts'
-    path: '/artifcats'
+    path: '/artifacts'
 
 # Copy the files from storage needed to connect to git.
 - name: 'gcr.io/cloud-builders/gsutil'
