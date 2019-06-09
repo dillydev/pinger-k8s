@@ -2,6 +2,8 @@ substitutions:
   _EXEC_NAME: 'pinger'
   _GITHUB_ORG: 'dillydev'
   _GITHUB_REPO: 'pinger-k8s'
+  _COMPUTE_ZONE: 'us-central1-b'
+  _CONTAINER_CLUSTER: 'hello-cloudbuild'
 
 steps:
 # This step deploys the new version of our container image
@@ -13,8 +15,8 @@ steps:
   - '-f'
   - 'manifests/$_EXEC_NAME/templates/deployment.yaml'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=hello-cloudbuild'
+  - 'CLOUDSDK_COMPUTE_ZONE=$_COMPUTE_ZONE'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=$_CONTAINER_CLUSTER'
 
 
 # Copy the files from storage needed to connect to git.
