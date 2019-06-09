@@ -1,0 +1,14 @@
+---
+# Source: pinger/templates/service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: pinger
+spec:
+  selector:
+    app: pinger
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+  type: LoadBalancer
