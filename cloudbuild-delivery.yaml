@@ -74,7 +74,8 @@ steps:
   args:
   - '-c'
   - |
-    mv /artifacts/pinger manifests/pinger
+    rm -rf manifests/pinger && \
+    mv /artifacts/pinger manifests/pinger && \
     set -x && \
     # Configure Git to create commits with Cloud Build's service account
     git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)') && \
