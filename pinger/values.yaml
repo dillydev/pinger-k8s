@@ -31,7 +31,7 @@
 #   #    hosts:
 #   #      - chart-example.local
 
-image: gcr.io/testermctesterson/pinger:4f27026
+image: gcr.io/testermctesterson/pinger:8fb7162
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
