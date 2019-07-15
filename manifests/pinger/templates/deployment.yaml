@@ -22,6 +22,6 @@ spec:
         command:
         - /bin/server
         name: pinger
-        image: gcr.io/testermctesterson/pinger:44772a1
+        image: gcr.io/testermctesterson/pinger:83c813a
         ports:
         - containerPort: 8080 
