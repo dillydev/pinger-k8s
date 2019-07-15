@@ -50,7 +50,7 @@ steps:
   args:
   - '-c'
   - |
-     sed -n "s/\(image: gcr.io\/${PROJECT_ID}\/$_EXEC_NAME:.*$\)/\1 /p" manifests/$_EXEC_NAME/templates/deployment.yaml > _IMG && \
+     $(sed -n "s/\(image: gcr.io\/${PROJECT_ID}\/$_EXEC_NAME:.*$\)/\1 /p" manifests/$_EXEC_NAME/templates/deployment.yaml) > _IMG && \
      cat _IMG && \
      git fetch origin candidate-prod && git checkout candidate-prod && \
      git config --global user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)') && \
