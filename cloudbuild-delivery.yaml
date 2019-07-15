@@ -4,6 +4,7 @@ substitutions:
   _GITHUB_REPO: 'pinger-k8s'
   _COMPUTE_ZONE: 'us-central1-b'
   _CONTAINER_CLUSTER: 'hello-cloudbuild'
+  _GCR_IMAGE: ''
 
 steps:
 # Copy the files from storage needed to connect to git.
@@ -49,7 +50,7 @@ steps:
   args:
   - '-c'
   - |
-     $_GCR_IMAGE=$(sed -n "s/\(image: gcr.io\/${PROJECT_ID}\/$_EXEC_NAME:.*$\)/\1 /p" manifests/$_EXEC_NAME/templates/deployment.yaml) && \
+     _GCR_IMAGE=$(sed -n "s/\(image: gcr.io\/${PROJECT_ID}\/$_EXEC_NAME:.*$\)/\1 /p" manifests/$_EXEC_NAME/templates/deployment.yaml) && \
      echo $_GCR_IMAGE && \
      git fetch origin candidate-prod && git checkout candidate-prod && \
      git config --global user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)') && \
