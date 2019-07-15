@@ -1,5 +1,5 @@
 GCR_IMAGE
-replicaCound: 1
+replicaCount: 1
 resources: 
    requests:
      cpu: 10m
