@@ -7,7 +7,7 @@ metadata:
   labels:
     app: pinger-prod
 spec:
-  replicas: 2
+  replicas: 
   selector:
     matchLabels:
       app: pinger-prod
@@ -22,6 +22,6 @@ spec:
         command:
         - /bin/server
         name: pinger-prod
-        image: gcr.io/testermctesterson/pinger:b41c0a0
+        image: 
         ports:
         - containerPort: 8080 
