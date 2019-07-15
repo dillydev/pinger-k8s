@@ -3,25 +3,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pinger
+  name: pinger-prod
   labels:
-    app: pinger
+    app: pinger-prod
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: pinger
+      app: pinger-prod
   template:
     metadata:
       labels:
-        app: pinger
+        app: pinger-prod
     spec:
       containers:
       - args:
           - dual
         command:
         - /bin/server
-        name: pinger
-        image: 
+        name: pinger-prod
+        image: gcr.io/testermctesterson/pinger:b41c0a0
         ports:
         - containerPort: 8080 

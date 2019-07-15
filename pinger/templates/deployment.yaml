@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pinger
+  name: pinger-prod
   labels:
-    app: pinger
+    app: pinger-prod
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: pinger
+      app: pinger-prod
   template:
     metadata:
       labels:
-        app: pinger
+        app: pinger-prod
     spec:
       containers:
       - args:
           - dual
         command:
         - /bin/server
-        name: pinger
+        name: pinger-prod
         image: {{ .Values.image }}
         ports:
         - containerPort: 8080 
