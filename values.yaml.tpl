@@ -1,4 +1,4 @@
-image: gcr.io/GOOGLE_CLOUD_PROJECT/pinger:COMMIT_SHA
+image: gcr.io/GOOGLE_CLOUD_PROJECT/APP_IMAGE
 replicaCount: 1
 resources: 
    requests:
