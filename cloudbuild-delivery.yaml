@@ -13,7 +13,7 @@ steps:
   args:
   - 'apply'
   - '-f'
-  - 'manifests/$_EXEC_NAME/templates/deployment.yaml'
+  - 'manifests/$_EXEC_NAME/templates/'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=$_COMPUTE_ZONE'
   - 'CLOUDSDK_CONTAINER_CLUSTER=$_CONTAINER_CLUSTER'
