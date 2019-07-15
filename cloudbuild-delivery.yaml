@@ -78,7 +78,7 @@ steps:
   - |
     git remote remove origin && git remote add origin git@github.com:$_GITHUB_ORG/$_GITHUB_REPO.git && \
     git add $_EXEC_NAME manifests && \
-    git commit -m "Build from commit ${SHORT_SHA} of repository $_GITHUB_REPO" && \
+    git commit -m "Deploying image Build from commit ${Commit_SHA} of repository $_GITHUB_REPO-k8s" && \
     git push origin candidate-prod
   volumes:
   - name: 'ssh'
