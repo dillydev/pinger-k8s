@@ -1,4 +1,4 @@
-image: gcr.io/testermctesterson/pinger:c41c691
+image: gcr.io/testermctesterson/pinger:5209b4a
 replicaCount: 1
 resources: 
    requests:
