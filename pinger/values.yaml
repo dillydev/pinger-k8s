@@ -1,6 +1,6 @@
-replicaCount: 2
-image: gcr.io/testermctesterson/pinger:b41c0a0
-resources:
-  requests:
-    cpu: 100m
-    memory: 128Mi
+
+replicaCound: 1
+resources: 
+   requests:
+     cpu: 10m
+     memory: 128Mi
