@@ -3,10 +3,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: pinger
+  name: pinger-prod
 spec:
   selector:
-    app: pinger
+    app: pinger-prod
   ports:
   - protocol: TCP
     port: 80
