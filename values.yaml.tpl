@@ -31,7 +31,7 @@
 #   #    hosts:
 #   #      - chart-example.local
 
-image: gcr.io/GOOGLE_CLOUD_PROJECT/pinger:COMMIT_SHA
+GCR_IMAGE
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little

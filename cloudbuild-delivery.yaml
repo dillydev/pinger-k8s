@@ -56,7 +56,7 @@ steps:
     path: /root/.ssh
 
 - name: 'gcr.io/cloud-builders/git'
-  id: Copy to dev branch
+  id: Copy to prod branch
   entrypoint: /bin/sh
   args:
   - '-c'
@@ -65,13 +65,13 @@ steps:
     # remove https origin and add ssh origin
     git remote remove origin && git remote add origin git@github.com:$_GITHUB_ORG/$_GITHUB_REPO.git && \
     # Switch to the dev branch and copy the manifests from the candidate branch
-    git fetch origin dev && git checkout dev && \
+    git fetch origin prod && git checkout prod && \
     git checkout $COMMIT_SHA manifests && \
     # Commit the manifests with a descriptive commit message
     git commit -m "Manifest from commit $COMMIT_SHA
     $(git log --format=%B -n 1 $COMMIT_SHA)" && \
     # Push the changes back to Cloud Source Repository
-    git push origin dev
+    git push origin prod
   volumes:
   - name: 'ssh'
     path: /root/.ssh
