@@ -50,7 +50,7 @@ steps:
   - '-c'
   - |
      _GCR_IMAGE=$(sed -n "s/\(image: gcr.io\/${PROJECT_ID}\/$_EXEC_NAME:.*$\)/\1 /p" manifests/$_EXEC_NAME/templates/deployment.yaml) && \
-     git fetch origin candidate-prod && checkout candidate-prod && \
+     git fetch origin candidate-prod && git checkout candidate-prod && \
      git config --global user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)') && \
      sed "s/GCR_IMAGE/$_GCR_IMAGE/g" values.yaml.tpl > $_EXEC_NAME/values.yaml
   volumes:
