@@ -22,6 +22,6 @@ spec:
         command:
         - /bin/server
         name: pinger-prod
-        image: 
+        image: gcr.io/testermctesterson/
         ports:
         - containerPort: 8080 

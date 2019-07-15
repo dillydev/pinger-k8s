@@ -1,4 +1,4 @@
-
+image: gcr.io/testermctesterson/
 replicaCount: 1
 resources: 
    requests:
