@@ -4,7 +4,6 @@ substitutions:
   _GITHUB_REPO: 'pinger-k8s'
   _COMPUTE_ZONE: 'us-central1-b'
   _CONTAINER_CLUSTER: 'hello-cloudbuild'
-  _APP_IMG: ''
 
 steps:
 # Copy the files from storage needed to connect to git.
@@ -51,18 +50,13 @@ steps:
   - '-c'
   - |
      grep -o 'pinger:.*' manifests/$_EXEC_NAME/templates/deployment.yaml > _IMG && \
-     cat _IMG && \
-     _APP_IMG=$(cat _IMG) && \
-     echo $_APP_IMG && \
      git fetch origin candidate-prod && git checkout candidate-prod && \
      git config --global user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)') && \
      sed "s/GOOGLE_CLOUD_PROJECT/${PROJECT_ID}/g" values.yaml.tpl | \
-     sed "s/APP_IMAGE/$_APP_IMG/g" > $_EXEC_NAME/values.yaml
+     sed "s/APP_IMAGE/$(cat _IMG)/g" > $_EXEC_NAME/values.yaml
   volumes:
   - name: 'ssh'
     path: /root/.ssh
-  env:
-  - '_APP_IMG='
 
 - name: 'gcr.io/$PROJECT_ID/helm'
   id: generate manifest
@@ -84,8 +78,7 @@ steps:
   - |
     git remote remove origin && git remote add origin git@github.com:$_GITHUB_ORG/$_GITHUB_REPO.git && \
     git add $_EXEC_NAME manifests && \
-    git commit -m "Deploying image $_GCR_IMAGE
-    Build from image $_GCR_IMAGE of repository $_GITHUB_REPO" && \
+    git commit -m "Build from commit ${SHORT_SHA} of repository $_GITHUB_REPO" && \
     git push origin candidate-prod
   volumes:
   - name: 'ssh'
