@@ -75,6 +75,7 @@ steps:
   args:
   - '-c'
   - |
+    git remote remove origin && git remote add origin git@github.com:$_GITHUB_ORG/$_GITHUB_REPO.git && \
     git add $_EXEC_NAME manifests && \
     git commit -m "Deploying image gcr.io./${PROJECT_ID}/$_EXEC_NAME:${SHORT_SHA} 
     Build from commit ${Commit_SHA} of repository $_GITHUB_REPO" && \
