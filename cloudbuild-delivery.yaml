@@ -1,28 +1,11 @@
+substitutions:
+  _EXEC_NAME: 'pinger'
+  _GITHUB_ORG: 'dillydev'
+  _GITHUB_REPO: 'pinger-k8s'
+  _COMPUTE_ZONE: 'us-central1-b'
+  _CONTAINER_CLUSTER: 'hello-cloudbuild'
+
 steps:
-
-- name: 'gcr.io/$PROJECT_ID/helm'
-  id: generate manifest
-  args:
-  - 'template'
-  - '--output-dir'
-  - './manifests'
-  - './pinger'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=hello-cloudbuild'
-
-# This step deploys the new version of our container image
-# in the hello-cloudbuild Kubernetes Engine cluster.
-- name: 'gcr.io/cloud-builders/kubectl'
-  id: Deploy
-  args:
-  - 'apply'
-  - '-f'
-  - 'manifests/pinger/templates/deployment.yaml'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=hello-cloudbuild'
-
 # Copy the files from storage needed to connect to git.
 - name: 'gcr.io/cloud-builders/gsutil'
   id: copy ssh keys for github
@@ -59,33 +42,43 @@ steps:
   - name: 'ssh'
     path: /root/.ssh
 
-# This step copies the applied manifest to the production branch
-# The COMMIT_SHA variable is automatically
-# replaced by Cloud Build.
+# update helm values 
 - name: 'gcr.io/cloud-builders/git'
-  id: Copy to dev branch
+  id: Update helm values for prod
   entrypoint: /bin/sh
   args:
   - '-c'
   - |
-    set -x && \
-    # Configure Git to create commits with Cloud Build's service account
-    git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)') && \
-    git remote rm origin && \
-    git remote add origin git@github.com:dillydev/pinger-k8s.git && \
-    # commit to candidate branch for tracking
-    git fetch origin && git checkout candidate-dev && \
-    git add manifests pinger && \
-    git commit -m "Manifest from commit $COMMIT_SHA $(git log --format=%B -n 1 $COMMIT_SHA)" && \
-    git push origin candidate-dev && \
-    # Switch to the dev branch and copy the manifests from the candidate branch
-    git checkout dev && \
-    git checkout $COMMIT_SHA manifests && \
-    # Commit the kubernetes.yaml file with a descriptive commit message
-    git commit -m "Manifest from commit $COMMIT_SHA
-    $(git log --format=%B -n 1 $COMMIT_SHA)" && \
-    # Push the changes back to Cloud Source Repository
-    git push origin dev
+     _GCR_IMAGE=$(sed -n "s/\(image: gcr.io\/${PROJECT_ID}\/$_EXEC_NAME:.*$\)/\1 /p" manifests/$_EXEC_NAME/templates/deployment.yaml) && \
+     git checkout candidate-prod && \
+     git config --global user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)') && \
+     sed "s/GCR_IMAGE/$_GCR_IMAGE/g" values.yaml.tpl > $_EXEC_NAME/values.yaml
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
+- name: 'gcr.io/$PROJECT_ID/helm'
+  id: generate manifest
+  entrypoint: bash
+  args:
+  - '-c'
+  - |
+    helm template --output-dir ./manifests ./$_EXEC_NAME
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=hello-cloudbuild'
+
+# push new helm values to k8s repo
+- name: 'gcr.io/cloud-builders/git'
+  id: commit new helm values
+  entrypoint: /bin/sh
+  args:
+  - '-c'
+  - |
+    git add $_EXEC_NAME manifests && \
+    git commit -m "Deploying image gcr.io./${PROJECT_ID}/$_EXEC_NAME:${SHORT_SHA} 
+    Build from commit ${Commit_SHA} of repository $_GITHUB_REPO" && \
+    git push origin candidate-prod
   volumes:
   - name: 'ssh'
     path: /root/.ssh
