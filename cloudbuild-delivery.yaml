@@ -51,7 +51,9 @@ steps:
   - '-c'
   - |
      grep -o 'pinger:.*' manifests/$_EXEC_NAME/templates/deployment.yaml > _IMG && \
-     _cat _IMG && \
+     cat _IMG && \
+     TESTVAR=$(cat _IMG)
+     echo $TESTVAR
      git fetch origin candidate-prod && git checkout candidate-prod && \
      git config --global user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)') && \
      sed "s/GOOGLE_CLOUD_PROJECT/${PROJECT_ID}/g" values.yaml.tpl | \
