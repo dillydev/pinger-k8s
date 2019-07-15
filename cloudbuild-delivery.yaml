@@ -52,17 +52,17 @@ steps:
   - |
      grep -o 'pinger:.*' manifests/$_EXEC_NAME/templates/deployment.yaml > _IMG && \
      cat _IMG && \
-     IMG=$(cat _IMG) && \
-     echo $IMG && \
+     _APP_IMG=$(cat _IMG) && \
+     echo $_APP_IMG && \
      git fetch origin candidate-prod && git checkout candidate-prod && \
      git config --global user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)') && \
      sed "s/GOOGLE_CLOUD_PROJECT/${PROJECT_ID}/g" values.yaml.tpl | \
-     sed "s/APP_IMAGE/$IMG/g" > $_EXEC_NAME/values.yaml
+     sed "s/APP_IMAGE/$_APP_IMG/g" > $_EXEC_NAME/values.yaml
   volumes:
   - name: 'ssh'
     path: /root/.ssh
   env:
-  - 'IMG='
+  - '_APP_IMG='
 
 - name: 'gcr.io/$PROJECT_ID/helm'
   id: generate manifest
